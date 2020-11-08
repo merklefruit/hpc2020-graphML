@@ -1,16 +1,15 @@
-# Oracle Labs High Performance Computing Contest - Fall 2020
+# Oracle High Performance Computing Contest - Fall 2020
 
-Nicolas Racchi, BSc Automation Engineering student at [Polimi](https://www.polimi.it)
+_Author: **Nicolas Racchi**, BSc Automation Engineering student at [Polimi](https://www.polimi.it)_
 
-> This repository contains all the material for my submission to the **Graph ML** contest.
+> This repository contains all the content for my submission to the **Graph ML** contest.
 
-## How to run the model
+## Installation and running the model
 
-The easiest way to run my submission is by using the `script`, which will cycle
+The easiest and best way to run my submission is by using the `script` I prepared, which will cycle
 through all the steps automatically.
 
-Note: you don't have to download any additional data since the dataset is included in this repo
-(about 50MB)
+NOTE: The dataset is automatically pulled from the original [repository](https://github.com/AlbertoParravicini/high-performance-graph-analytics-2020/tree/main/track-ml/data) of the contest, so you don't have to install it manually.
 
 ```bash
 # 1 Clone the repo
@@ -22,4 +21,4 @@ python script.py
 
 ## Written report
 
-Please refer to my written report for the implementation details.
+Please refer to my written report for the specific implementation details.
