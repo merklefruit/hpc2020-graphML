@@ -4,3 +4,4 @@ Pipfile.lock
 create_requirements.sh
 demo.py
 .vscode
+.DS_Store
