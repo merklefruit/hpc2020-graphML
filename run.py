@@ -29,7 +29,8 @@ def main():
   # json.dump(v_sets, open('./checkpoint/v_sets.json', 'w'))
   # Path('./checkpoint/e_sets.json', exist_ok=True).touch()
   # json.dump(e_sets, open('./checkpoint/e_sets.json', 'w'))
-
+  
+  '''
   #! DEEP WALK
   node_ids, embeddings, core_t, ext_t = sg_DeepWalk(v_sets, e_sets, v_sample, e_sample)
 
@@ -53,8 +54,9 @@ def main():
   )
   plt.title("TSNE visualization of node embeddings w.r.t. Extended Case ID")
   plt.show()
+  '''
 
-  return 1
+  return v_sets, e_sets, core_sample, ext_sample
 
 if __name__ == "__main__":
     main()
