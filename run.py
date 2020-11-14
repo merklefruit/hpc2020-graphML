@@ -1,9 +1,9 @@
 from utils.load_data import load_data
 from utils.preprocess import preprocess_data
 from utils.tools import subsample
-from utils.visualization import get_TSNE
 
-from model.sg_setup_1 import sg_DeepWalk
+from models.deepWalk import sg_DeepWalk
+from models.deepGInfomax import deepGraphInfomax
 
 import json
 from pathlib import Path
@@ -31,30 +31,13 @@ def main():
   # json.dump(e_sets, open('./checkpoint/e_sets.json', 'w'))
   
   '''
-  #! DEEP WALK
+  #? DEEP WALK
   node_ids, embeddings, core_t, ext_t = sg_DeepWalk(v_sets, e_sets, v_sample, e_sample)
-
-  # Visualize embeddings with TSNE
-  embs_2d = get_TSNE(embeddings)
-
-  # Draw the embedding points, coloring them by the target label (CaseID)
-  alpha = 0.6
-  label_map = {l: i for i, l in enumerate(np.unique(ext_t), start=1000) if pd.notna(l)}
-  label_map[0] = 1
-  node_colours = [label_map[target] if pd.notna(target) else 0 for target in ext_t]
-
-  plt.figure(figsize=(15, 15))
-  plt.axes().set(aspect="equal")
-  plt.scatter(
-      embs_2d[:, 0],
-      embs_2d[:, 1],
-      c=node_colours,
-      cmap="jet",
-      alpha=alpha,
-  )
-  plt.title("TSNE visualization of node embeddings w.r.t. Extended Case ID")
-  plt.show()
   '''
+
+  #? Deep Graph Infomax
+  deepGraphInfomax(v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample)
+  
 
   return v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample
 
