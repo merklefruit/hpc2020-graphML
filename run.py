@@ -56,7 +56,7 @@ def main():
   plt.show()
   '''
 
-  return v_sets, e_sets, core_sample, ext_sample
+  return v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample
 
 if __name__ == "__main__":
     main()
