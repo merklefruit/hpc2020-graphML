@@ -140,7 +140,7 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
   
   # Repeat algorithm for every node type
   # (each node type requires a training phase)
-  full_graph_embeddings = []
+  full_graph_embeddings = [None] * len(v_sets)
   i = 0
   for node_type in v_sets:
     full_graph_embeddings[i] = fake_embs()

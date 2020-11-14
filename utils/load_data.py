@@ -24,10 +24,10 @@ def load_data():
     print("Dataset already downloaded. Loading it from file system")
 
     t0 = time.time()
-    nodes.read_csv(f"{data_path}{nodes_path}")
-    edges.read_csv(f"{data_path}{edges_path}")
-    core_target.read_csv(f"{data_path}{training_core_path}")
-    ext_target.read_csv(f"{data_path}{training_extended_path}")
+    nodes = pd.read_csv(f"{data_path}{nodes_path}", low_memory=False, sep=',', index_col='node_id')
+    edges = pd.read_csv(f"{data_path}{edges_path}", low_memory=False, sep=',', index_col='edge_id')
+    core_target = pd.read_csv(f"{data_path}{training_core_path}", index_col='NodeID')
+    ext_target = pd.read_csv(f"{data_path}{training_extended_path}", index_col='NodeID')
     t1 = time.time()
 
     print(f"LOADING DATA: {(t1-t0):.2f} s")
