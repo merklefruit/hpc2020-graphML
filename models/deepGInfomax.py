@@ -9,11 +9,8 @@ from sklearn.manifold import TSNE
 from sklearn.linear_model import LogisticRegression
 
 import stellargraph as sg
-from stellargraph.mapper import (
-    CorruptedGenerator,
-    HinSAGENodeGenerator,
-)
-from stellargraph.layer import GCN, DeepGraphInfomax, GraphSAGE, GAT, APPNP, HinSAGE, Dense
+from stellargraph.mapper import CorruptedGenerator, HinSAGENodeGenerator
+from stellargraph.layer import DeepGraphInfomax, HinSAGE, Dense
 
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
@@ -22,17 +19,8 @@ from tensorflow.keras import Model, optimizers, losses, metrics
 
 def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_sample):
   print("DeepGraphInfomax Starting")
-  
-  batch_size = 300
-  epochs = 50
-  dropout = 0.5
-  patience = 15
-  verbose = 1
-  num_samples = [8, 4]
-  hinsage_layer_sizes = [32, 32]
 
-  # Check if num_samples and layer_size are compatible
-  assert len(hinsage_layer_sizes) == len(num_samples)
+  verbose = 1
 
   # Initialize stellargraph object
   G = sg.StellarDiGraph(v_sets, e_sets)
@@ -40,27 +28,34 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
   '''
   HinSAGENodeGenerator(G, batch_size, num_samples, head_node_type=None, schema=None, seed=None, name=None)
 
-  G = graph
+  G = graph (stellargraph object)
   batch_size = size of batch to return
   num_samples = the number of samples per layer (hop) to take
   head_node_type = the node type that will be given to the generator using the flow method. 
                   The model will expect this type.
                   If not given, it defaults to a single node type.
+                  Note: HinSAGE does aggregation on multiple node types 
+                  but then predicts on one type.
   '''
 
-  def create_embeddings(node_type):
+  def create_embeddings(
+    node_type, num_samples, hinsage_layer_sizes, 
+    epochs, patience, batch_size, dropout, activations ):
+
+    # Check if num_samples and layer_size are compatible
+    assert len(hinsage_layer_sizes) == len(num_samples)
 
     generator = HinSAGENodeGenerator(
       G, 
       batch_size, 
-      num_samples,
+      num_samples=num_samples,
       head_node_type=node_type
     )
 
     # HinSAGE layers
     hinsage = HinSAGE(
       layer_sizes=hinsage_layer_sizes,
-      activations=['relu', 'softmax'],
+      activations=activations,
       generator=generator, 
       bias=True,
       normalize="l2",
@@ -82,7 +77,7 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
       es = EarlyStopping(monitor="loss", min_delta=0, patience=patience)
       
       history = model.fit(gen, epochs=epochs, verbose=verbose, callbacks=[es])
-      sg.utils.plot_history(history)
+      # sg.utils.plot_history(history)
       
       ttrain1 = time.time()
       print(f"Training complete in {(ttrain1-ttrain):.2f} s ({(ttrain1-ttrain)/60:.2f} min)")
@@ -129,21 +124,47 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
     )
     ax.set(aspect="equal")
     plt.title(f'TSNE visualization of HinSAGE "{node_type}" embeddings with Deep Graph Infomax')
-    plt.show()
+    plt.savefig(f"./checkpoint/embeddings_{node_type}.pdf")
 
-    return all_embeddings
-
-
-
-  def fake_embs():
-    return [[2, 32, 4, 42, 12, 421, 42], [214, 21, 214, 24, 21, 42, 2]]
+    return all_embeddings, embeddings_2d
   
-  # Repeat algorithm for every node type
+  # Repeat DGI HinSAGE algorithm for every node type
   # (each node type requires a training phase)
-  full_graph_embeddings = [None] * len(v_sets)
-  i = 0
-  for node_type in v_sets:
-    full_graph_embeddings[i] = fake_embs()
-    i += 1
+
+  account_embeddings, account_2d = create_embeddings(
+   node_type = "Account",
+   epochs = 75,
+   patience = 25,
+   batch_size = 250,
+   dropout = 0.4,
+   num_samples = [8, 4], 
+   hinsage_layer_sizes = [32, 32],
+   activations = ['relu', 'softmax']
+  )
+
+  customer_embeddings, customer_2d = create_embeddings(
+    node_type = "Customer",
+    epochs = 100,
+    patience = 50,
+    batch_size = 400,
+    dropout = 0.4,
+    num_samples = [12],
+    hinsage_layer_sizes = [72],
+    activations = ['relu']
+  )
+
+  derEntity_embeddings, derEntity_2d = create_embeddings(
+    node_type = "Derived Entity",
+    epochs = 100,
+    patience = 50,
+    batch_size = 1200,
+    dropout = 0.25,
+    num_samples = [12],
+    hinsage_layer_sizes = [72],
+    activations = ['relu']
+  )
+
+  # Address and External Entity don't have any outgoing nodes and can't be used for this.
+  # Another technique specific for External Entities and Addresses might be a good fit.
 
   return 1

@@ -79,6 +79,6 @@ def preprocess_data(v_sample, e_sample):
         v_sets[i] = v_sets[i].drop('Name', axis=1)
 
   t1 = time.time()
-  print(f"PREPROCESSING: Complete in {(t1-t0):.2f} s")
+  print(f"PREPROCESSING: {(t1-t0):.2f} s")
 
   return v_sets, e_sets

@@ -1,15 +1,15 @@
+import json
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
 from utils.load_data import load_data
 from utils.preprocess import preprocess_data
 from utils.tools import subsample
 
 from models.deepWalk import sg_DeepWalk
 from models.deepGInfomax import deepGraphInfomax
-
-import json
-from pathlib import Path
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
 def main():
   print("Running the scripts sequentially \n")
@@ -23,12 +23,6 @@ def main():
 
   # Preprocess data
   v_sets, e_sets = preprocess_data(v_sample, e_sample)
-
-  # Save data to checkpoint
-  # Path('./checkpoint/v_sets.json', exist_ok=True).touch()
-  # json.dump(v_sets, open('./checkpoint/v_sets.json', 'w'))
-  # Path('./checkpoint/e_sets.json', exist_ok=True).touch()
-  # json.dump(e_sets, open('./checkpoint/e_sets.json', 'w'))
   
   '''
   #? DEEP WALK
