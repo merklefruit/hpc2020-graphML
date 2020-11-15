@@ -13,3 +13,14 @@ def get_TSNE(embeddings, components=2):
   print("dimensionality reduction (TSNE) done in {:.2f} s".format(t1-t0))
 
   return node_embeddings_2d
+
+def get_PCA(embeddings, components=2):
+  t0 = time.time()
+
+  trans = PCA(n_components=components)
+  node_embeddings_2d = trans.fit_transform(embeddings)
+  
+  t1 = time.time()
+  print("dimensionality reduction (PCA) done in {:.2f} s".format(t1-t0))
+
+  return node_embeddings_2d

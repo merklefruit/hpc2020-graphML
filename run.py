@@ -20,7 +20,7 @@ def main():
   # Subsample data to n edges
   n = 10000
   v_sample, e_sample, core_sample, ext_sample = subsample(v_data, e_data, core_targets, ext_targets, n)
-
+  
   # Preprocess data
   v_sets, e_sets = preprocess_data(v_sample, e_sample)
   

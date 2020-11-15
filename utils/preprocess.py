@@ -3,14 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
-
 pd.set_option('mode.chained_assignment', None)
 
 # preprocessing of heterogeneous nodes and edges
 def preprocess_data(v_sample, e_sample):
   t0 = time.time()
-
-  # Feature engineering steps
 
   #? 1: missing core/ext case ID
   # Solution: set to 0 if NaN

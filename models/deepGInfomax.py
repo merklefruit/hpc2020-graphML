@@ -20,6 +20,8 @@ from tensorflow.keras import Model, optimizers, losses, metrics
 def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_sample):
   print("DeepGraphInfomax Starting")
 
+  t0 = time.time()
+
   verbose = 1
 
   # Initialize stellargraph object
@@ -40,7 +42,7 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
 
   def create_embeddings(
     node_type, num_samples, hinsage_layer_sizes, 
-    epochs, patience, batch_size, dropout, activations ):
+    epochs, patience, batch_size, dropout, activations):
 
     # Check if num_samples and layer_size are compatible
     assert len(hinsage_layer_sizes) == len(num_samples)
@@ -124,7 +126,7 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
     )
     ax.set(aspect="equal")
     plt.title(f'TSNE visualization of HinSAGE "{node_type}" embeddings with Deep Graph Infomax')
-    plt.savefig(f"./checkpoint/embeddings_{node_type}.pdf")
+    plt.savefig(f"./embeddings/HinSAGE_DGI_embeddings_{node_type}.pdf")
 
     return all_embeddings, embeddings_2d
   
@@ -166,5 +168,56 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
 
   # Address and External Entity don't have any outgoing nodes and can't be used for this.
   # Another technique specific for External Entities and Addresses might be a good fit.
+
+  # Put all the embeddings in the same map
+  # TODO
+
+  # arrays
+  full_graph_embeddings = [
+    account_embeddings,
+    customer_embeddings,
+    derEntity_embeddings
+  ]
+
+  # dataframes
+  full_graph_2d_frames = [
+    account_2d,
+    customer_2d,
+    derEntity_2d
+  ]
+  full_graph_2d = pd.concat(full_graph_2d_frames)
+
+  # draw all the embeddings together
+  node_ids_full = np.concatenate((
+      G.nodes(node_type='Account'), 
+      G.nodes(node_type='Customer'), 
+      G.nodes(node_type='Derived Entity')
+  )).tolist()
+
+  ext_targets_full = v_sample.loc[[int(node_id) for node_id in node_ids_full]].ExtendedCaseGraphID 
+
+  label_map_full = {l: i*10 for i, l in enumerate(np.unique(ext_targets_full), start=10) if pd.notna(l)}
+  node_colours_full = [label_map_full[target] if pd.notna(target) else 0 for target in ext_targets_full]
+  
+  alpha = 0.7
+  fig, ax = plt.subplots(figsize=(15, 15))
+  ax.scatter(
+      full_graph_2d[0],
+      full_graph_2d[1],
+      c=node_colours_full,
+      cmap="jet",
+      alpha=alpha,
+  )
+  ax.set(aspect="equal")
+  plt.title(f'TSNE visualization of HinSAGE Full Graph embeddings with Deep Graph Infomax')
+  plt.savefig("./embeddings/HinSAGE_DGI_embeddings_FullGraph.pdf")
+
+  # Train a classifier for prediction
+  # TODO
+
+
+
+  t1 = time.time()
+  print(f"HinSAGE DGI completed in {(t1-t0):.2f} s ({(t1-t0)/60:.2f} min)")
 
   return 1

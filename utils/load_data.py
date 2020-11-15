@@ -19,7 +19,9 @@ training_extended_path = Path("/training_extended_nodes.csv")
 # Loads data either from remote or local locations
 # based on if you have already downloaded it before.
 def load_data():
-  
+
+  os.chdir('../')
+
   def load_local_data():
     print("Dataset already downloaded. Loading it from file system")
 
