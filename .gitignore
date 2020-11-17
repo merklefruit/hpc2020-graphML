@@ -4,5 +4,6 @@ Pipfile.lock
 create_requirements.sh
 demo.py
 .vscode
+.idea
 .DS_Store
 raw
