@@ -75,6 +75,14 @@ def preprocess_data(v_sample, e_sample):
       if 'Name' in list(v_sets[i].columns):
         v_sets[i] = v_sets[i].drop('Name', axis=1)
 
+
+  #? 6: Additional Features
+
+  # Adding 'Fraudolent' flag:
+  for set in v_sets:
+    v_sets[set]['Fraudolent'] = np.where(
+    np.logical_or(v_sets[set]['CoreCaseGraphID'] != 0.0, v_sets[set]['ExtendedCaseGraphID'] != 0.0), '1', '0')
+
   t1 = time.time()
   print(f"PREPROCESSING: {(t1-t0):.2f} s")
 
