@@ -21,3 +21,7 @@ def load_for_jupyter(n):
   v_sample, e_sample, core_sample, ext_sample = subsample(v_data, e_data, core_targets, ext_targets, n)
   v_sets, e_sets = utils.preprocess_data(v_sample, e_sample)
   return v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample
+
+def load_for_jupyter_raw(n):
+  v_data, e_data, core_targets, ext_targets = utils.load_data()
+  return v_data, e_data, core_targets, ext_targets
