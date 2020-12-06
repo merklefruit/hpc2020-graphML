@@ -9,6 +9,25 @@ pd.set_option('mode.chained_assignment', None)
 def preprocess_data(v_sample, e_sample):
   t0 = time.time()
 
+  #? 0: TODO: Replace CoreCaseID and ExtCaseID with CSV data
+
+  #? 0.1: Add Extra Features: Node Degree (see Node Degree feature notebook)
+  source_data = e_sample.groupby('from_id').count().to_id
+  source_data = pd.DataFrame(source_data)
+  source_data = source_data.rename(columns={'to_id': 'source_degree'})
+  source_data = source_data.rename_axis('node_id')
+
+  target_data = e_sample.groupby('to_id').count().from_id
+  target_data = pd.DataFrame(target_data)
+  target_data = target_data.rename(columns={'from_id': 'target_degree'})
+  target_data = target_data.rename_axis('node_id')
+
+  v_sample = pd.merge(v_sample, source_data, left_index=True, right_index=True, how='left')
+  v_sample = pd.merge(v_sample, target_data, left_index=True, right_index=True, how='left')
+
+  v_sample['source_degree'] = v_sample['source_degree'].fillna(0)
+  v_sample['target_degree'] = v_sample['target_degree'].fillna(0)
+
   #? 1: missing core/ext case ID
   # Solution: set to 0 if NaN
 
@@ -21,7 +40,8 @@ def preprocess_data(v_sample, e_sample):
   v_sets = defaultdict()
   for v_type in list(pd.Categorical(v_sample.Label).categories):
       v_sets[v_type] = v_sample[v_sample.Label == v_type]
-      v_sets[v_type] = v_sets[v_type].drop(['Label', 'testingFlag']+list(v_sets[v_type].columns[v_sets[v_type].isnull().all()]), axis=1)
+      v_sets[v_type] = v_sets[v_type].drop(['Label']+list(v_sets[v_type].columns[v_sets[v_type].isnull().all()]), axis=1)
+      v_sets[v_type].testingFlag = v_sets[v_type].testingFlag.fillna(-1)
 
   e_sets = defaultdict()
   for e_type in list(pd.Categorical(e_sample.Label).categories):
@@ -78,10 +98,10 @@ def preprocess_data(v_sample, e_sample):
 
   #? 6: Additional Features
 
-  # Adding 'Fraudolent' flag:
-  for set in v_sets:
-    v_sets[set]['Fraudolent'] = np.where(
-    np.logical_or(v_sets[set]['CoreCaseGraphID'] != 0.0, v_sets[set]['ExtendedCaseGraphID'] != 0.0), '1', '0')
+  # # Adding 'Readable' flag:
+  # for set in v_sets:
+  #   v_sets[set]['Readable'] = np.where(
+  #   np.logical_or(v_sets[set]['CoreCaseGraphID'] != 0.0, v_sets[set]['ExtendedCaseGraphID'] != 0.0), '1', '0')
 
   t1 = time.time()
   print(f"PREPROCESSING: {(t1-t0):.2f} s")
