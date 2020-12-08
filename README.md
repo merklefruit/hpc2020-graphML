@@ -17,13 +17,11 @@ git clone https://github.com/nicolas-racchi/hpc2020-graphML
 # 2 cd in the project folder
 cd hpc2020-graphML
 
-# 3 (Optional): activate your virtualenv (I use pipenv)
+# 3 (Optional): activate your virtualenv & install dependencies
 virtualenv venv && source venv/bin/activate
-
-# 4 Install dependencies
 pip install -r requirements.txt
 
-# 5 run the script
+# 4 run the script
 python run.py
 ```
 
