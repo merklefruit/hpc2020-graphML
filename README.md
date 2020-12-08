@@ -4,21 +4,29 @@ _Author: **Nicolas Racchi**, BSc Automation Engineering student at [Polimi](http
 
 > This repository contains all the content for my submission to the **Graph ML** contest.
 
-## Installation and running the model
+## Installing and running my submission
 
-The easiest and best way to run my submission is by using the `script` I prepared, which will cycle
-through all the steps automatically.
+The easiest way to run my submission is by using the `run.py` script I prepared, which will run the HinSAGE with DGI + Decision tree classifier models and output final metrics and results.
 
-NOTE: The dataset is automatically pulled from the original [repository](https://github.com/AlbertoParravicini/high-performance-graph-analytics-2020/tree/main/track-ml/data) of the contest, so you don't have to install it manually.
+NOTE: The dataset is pulled from the original [repository](https://github.com/AlbertoParravicini/high-performance-graph-analytics-2020/tree/main/track-ml/) of the contest, so you don't have to install anything manually.
 
 ```bash
 # 1 Clone the repo
+git clone https://github.com/nicolas-racchi/hpc2020-graphML
+
 # 2 cd in the project folder
-# 3 Optional: activate your virtualenv (or equivalent)
+cd hpc2020-graphML
+
+# 3 (Optional): activate your virtualenv (I use pipenv)
+virtualenv venv && source venv/bin/activate
+
+# 4 Install dependencies
 pip install -r requirements.txt
-python script.py
+
+# 5 run the script
+python run.py
 ```
 
-## Written report
+## Written Report
 
-Please refer to my written report for the specific implementation details.
+Please refer to my written report for all the implementation specific details.

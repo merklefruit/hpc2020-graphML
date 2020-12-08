@@ -98,6 +98,11 @@ def preprocess_data(v_sample, e_sample):
 
   #? 6: Additional Features
 
+  '''
+  Note: isReadable flag: 
+    it basically tells me if the name has been protected by encryption and is thus unreadable.
+    I finally decided not to use this feature.
+  '''
   # # Adding 'Readable' flag:
   # for set in v_sets:
   #   v_sets[set]['Readable'] = np.where(
