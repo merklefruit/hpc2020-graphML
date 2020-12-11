@@ -105,7 +105,7 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
     print("Creating TSNE")
     embeddings_2d = pd.DataFrame(TSNE(n_components=2).fit_transform(all_embeddings), index=G.nodes(node_type=node_type))
 
-    # draw the points
+    # draw the points (colors based on ExtendedCaseGraphID)
     node_ids = G.nodes(node_type=node_type).tolist()
     ext_targets = v_sample.loc[[int(node_id) for node_id in node_ids]].ExtendedCaseGraphID 
 
@@ -220,4 +220,4 @@ def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_samp
   t1 = time.time()
   print(f"HinSAGE DGI completed in {(t1-t0):.2f} s ({(t1-t0)/60:.2f} min)")
 
-  return 1
+  return full_graph_embeddings

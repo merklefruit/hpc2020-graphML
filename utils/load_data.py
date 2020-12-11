@@ -32,7 +32,7 @@ def load_data():
     edges = pd.read_csv(f"{data_path}{edges_path}", low_memory=False, sep=',', index_col='edge_id')
     core_target = pd.read_csv(f"{data_path}{training_core_path}", index_col='NodeID')
     ext_target = pd.read_csv(f"{data_path}{training_extended_path}", index_col='NodeID')
-    core_testing = pd.read_csv(f"{data_path}{training_extended_path}", index_col='NodeID')
+    core_testing = pd.read_csv(f"{data_path}{testing_core_path}", index_col='NodeID')
     t1 = time.time()
 
     print(f"LOADING DATA: {(t1-t0):.2f} s")

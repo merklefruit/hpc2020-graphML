@@ -28,3 +28,7 @@ python run.py
 ## Written Report
 
 Please refer to my written report for all the implementation specific details.
+
+## External Libraries
+
+Find a list of the external libraries and their version in `requirements.txt`.

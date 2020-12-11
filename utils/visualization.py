@@ -14,6 +14,7 @@ def get_TSNE(embeddings, components=2):
 
   return node_embeddings_2d
 
+# Use PCA instead - not great for this task
 def get_PCA(embeddings, components=2):
   t0 = time.time()
 

@@ -1,5 +1,5 @@
-import time
 import pandas as pd
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -9,9 +9,39 @@ pd.set_option('mode.chained_assignment', None)
 def preprocess_data(v_sample, e_sample):
   t0 = time.time()
 
-  #? 0: TODO: Replace CoreCaseID and ExtCaseID with CSV data
+  v_data = v_sample
 
-  #? 0.1: Add Extra Features: Node Degree (see Node Degree feature notebook)
+  #? 0: Replace CoreCaseID, ExtCaseID and testingFlag with CSV data (notebook: "Correct CVS data")
+  v_data_new = v_data.drop(['CoreCaseGraphID', 'ExtendedCaseGraphID', 'testingFlag'], axis=1)
+
+  core_targets_new = core_targets.rename(columns={'CaseID': 'CoreCaseGraphID'})
+  core_targets_new.index.name = 'node_id'
+
+  ext_targets_new = ext_targets.rename(columns={'CaseID': 'ExtendedCaseGraphID'})
+  ext_targets_new.index.name = 'node_id'
+
+  core_testing_new = core_testing.rename(columns={'CaseID': 'CoreCaseGraphID'})
+  core_testing_new.index.name = 'node_id'
+
+  v_data_new = pd.merge(v_data_new, core_targets_new, left_index=True, right_index=True, how='left')
+  v_data_new = pd.merge(v_data_new, ext_targets_new, left_index=True, right_index=True, how='left')
+
+  # For some reason some nodes have 2 different core case IDs... filtering to just take the first
+  for ind, row in v_data.iterrows():
+      v_data_new['CoreCaseGraphID'][ind] = core_testing.loc[core_testing.index == ind].CaseID.values[0] if len(core_testing.loc[core_testing.index == ind].CaseID.values) != 0 else row['CoreCaseGraphID']
+
+  tsf = pd.DataFrame(v_data_new.index)
+  tsf = tsf.set_index('node_id')
+  tsf['testingFlag'] = np.NaN
+  for ind, row in tsf.iterrows():
+      tsf['testingFlag'][ind] = 0 if len(core_targets.loc[core_targets.index == ind]) != 0 or len(ext_targets.loc[ext_targets.index == ind]) != 0 else row.testingFlag
+  for ind, row in tsf.iterrows():
+      tsf['testingFlag'][ind] = 1 if len(core_testing.loc[core_testing.index == ind]) != 0 else row.testingFlag
+  v_data_new = pd.merge(v_data_new, tsf, left_index=True, right_index=True, how='left')
+
+  v_sample = v_data_new
+
+  #? 0.1: Add Extra Features: Node Degree (notebook: Node Degree feature)
   source_data = e_sample.groupby('from_id').count().to_id
   source_data = pd.DataFrame(source_data)
   source_data = source_data.rename(columns={'to_id': 'source_degree'})
@@ -109,6 +139,6 @@ def preprocess_data(v_sample, e_sample):
   #   np.logical_or(v_sets[set]['CoreCaseGraphID'] != 0.0, v_sets[set]['ExtendedCaseGraphID'] != 0.0), '1', '0')
 
   t1 = time.time()
-  print(f"PREPROCESSING: {(t1-t0):.2f} s")
+  print(f"PREPROCESSING DATA: {(t1-t0):.2f} s")
 
   return v_sets, e_sets

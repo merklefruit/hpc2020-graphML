@@ -29,10 +29,10 @@ def main():
   node_ids, embeddings, core_t, ext_t = sg_DeepWalk(v_sets, e_sets, v_sample, e_sample)
   '''
 
-  '''
+  
   #? Deep Graph Infomax
-  deepGraphInfomax(v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample)
-  '''
+  full_graph_embeddings = deepGraphInfomax(v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample)
+  
 
   return v_sets, e_sets, core_sample, ext_sample, v_sample, e_sample
 
