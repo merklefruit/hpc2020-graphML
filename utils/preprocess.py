@@ -6,7 +6,7 @@ from collections import defaultdict
 pd.set_option('mode.chained_assignment', None)
 
 # preprocessing of heterogeneous nodes and edges
-def preprocess_data(v_sample, e_sample):
+def preprocess_data(v_sample, e_sample, core_targets, ext_targets, core_testing):
   t0 = time.time()
 
   v_data = v_sample
@@ -39,7 +39,10 @@ def preprocess_data(v_sample, e_sample):
       tsf['testingFlag'][ind] = 1 if len(core_testing.loc[core_testing.index == ind]) != 0 else row.testingFlag
   v_data_new = pd.merge(v_data_new, tsf, left_index=True, right_index=True, how='left')
 
+  v_data_new = v_data_new[~v_data_new.index.duplicated(keep='first')]
+
   v_sample = v_data_new
+
 
   #? 0.1: Add Extra Features: Node Degree (notebook: Node Degree feature)
   source_data = e_sample.groupby('from_id').count().to_id
@@ -58,11 +61,13 @@ def preprocess_data(v_sample, e_sample):
   v_sample['source_degree'] = v_sample['source_degree'].fillna(0)
   v_sample['target_degree'] = v_sample['target_degree'].fillna(0)
 
+
   #? 1: missing core/ext case ID
   # Solution: set to 0 if NaN
 
   v_sample.CoreCaseGraphID = v_sample.CoreCaseGraphID.fillna(0)
   v_sample.ExtendedCaseGraphID = v_sample.ExtendedCaseGraphID.fillna(0)
+
 
   #? 2: Create dataframes for each node type (Account, Customer, Derived entity, External entity, Address)
   # and each edge type (has account, has address, is similar, money transfer)
@@ -78,6 +83,7 @@ def preprocess_data(v_sample, e_sample):
       e_sets[e_type] = e_sample[e_sample.Label == e_type]
       e_sets[e_type] = e_sets[e_type].drop(['Label']+list(e_sets[e_type].columns[e_sets[e_type].isnull().all()]), axis=1)
       e_sets[e_type] = e_sets[e_type].rename(columns={'from_id':'source', 'to_id':'target'})
+
 
   #? 3: Logical conversion of categorical features
 
@@ -107,12 +113,14 @@ def preprocess_data(v_sample, e_sample):
       e_sets[i]['Amount Flag']=e_sets[i]['Amount Flag'].map(conversion)
       e_sets[i] = e_sets[i].rename(columns={'Amount Flag':'weight'})
 
+
   #? 4: One-hot encoding for categorical features
 
   # get_dummies for one-hot encoding
   for i in v_sets:
       if 'Person or Organisation' in list(v_sets[i].columns):
           v_sets[i] = pd.get_dummies(v_sets[i], columns=['Person or Organisation'])
+
 
   #? 5: String features
 
