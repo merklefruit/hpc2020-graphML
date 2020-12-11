@@ -52,26 +52,26 @@ def preprocess_data(v_sample, e_sample):
   #? 3: Logical conversion of categorical features
 
   #Revenue Size Flag: low, mid_low, medium, mid_high, high -> 1,2,3,4,5
-  conversion = {'low':1, 'mid_low':2, 'medium':3, 'mid_high':4, 'high':5}
+  conversion = {'low':0.1, 'mid_low':0.3, 'medium':0.6, 'mid_high':0.8, 'high':1}
   for i in v_sets:
     if 'Revenue Size Flag' in list(v_sets[i].columns):
       v_sets[i]['Revenue Size Flag']=v_sets[i]['Revenue Size Flag'].map(conversion)
     
   #Income Size Flag: low, medium, high -> 1,2,3
-  conversion = {'low':1, 'medium':2, 'high':3}
+  conversion = {'low':0.1, 'medium':0.5, 'high':1}
   for i in v_sets:
     if 'Income Size Flag' in list(v_sets[i].columns):
       v_sets[i]['Income Size Flag']=v_sets[i]['Income Size Flag'].map(conversion)
 
   #Similarity Strength: weak, medium, strong -> 1,2,3
-  conversion = {'weak':1, 'medium':2, 'strong':3}
+  conversion = {'weak':0.1, 'medium':0.5, 'strong':1}
   for i in e_sets:
     if 'Similarity Strength' in list(e_sets[i].columns):
       e_sets[i]['Similarity Strength']= e_sets[i]['Similarity Strength'].map(conversion)
       e_sets[i] = e_sets[i].rename(columns={'Similarity Strength':'weight'})
 
   #Amount Flag: small, medium, large -> 1,50,500 -> treated as weights
-  conversion = {'small':1, 'medium':50, 'large':500}
+  conversion = {'small':0.1, 'medium':0.5, 'large':1}
   for i in e_sets:
     if 'Amount Flag' in list(e_sets[i].columns):
       e_sets[i]['Amount Flag']=e_sets[i]['Amount Flag'].map(conversion)
