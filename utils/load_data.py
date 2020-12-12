@@ -23,7 +23,7 @@ Loads data either from remote or local locations
 based on if you have already downloaded it before.
 '''
 def load_data():
-
+  print("LOADING DATA STARTED")
   os.chdir('../')
 
   def load_local_data():
@@ -37,7 +37,7 @@ def load_data():
     core_testing = pd.read_csv(f"{data_path}{testing_core_path}", index_col='NodeID')
     t1 = time.time()
 
-    print(f"LOADING DATA: {(t1-t0):.2f} s")
+    print(f"LOADING DATA COMPLETED: {(t1-t0):.2f} s")
 
     return nodes, edges, core_target, ext_target, core_testing
   
@@ -52,7 +52,7 @@ def load_data():
     core_testing = pd.read_csv(testing_core_nodes, sep='\t', index_col='NodeID')
     t1 = time.time()
 
-    print(f"LOADING DATA: {(t1-t0):.2f} s")
+    print(f"LOADING DATA COMPLETED: {(t1-t0):.2f} s")
 
     nodes.to_csv(f"{data_path}{nodes_path}")
     edges.to_csv(f"{data_path}{edges_path}")

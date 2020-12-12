@@ -37,7 +37,7 @@ The final solution is composed of:
 
 The reason for the second classifier is to remove class imbalance with regard to the ExtendedCaseID=0 class.
 
-Please refer to my written report for all the implementation specific details.
+> Please refer to my written report for all the implementation specific details.
 
 ## External Libraries
 
@@ -50,4 +50,4 @@ The main libraries leveraged in this solutions are:
 
 You can find the complete list of the dependencies as well as their version in `requirements.txt`.
 
-Please note that some libraries were only used in the development phase and are not relevant to the final solution. The ones mentioned above are ones that most important roles in the final submission.
+Please note that some libraries were only used in the development phase and are not relevant to the final solution. The ones mentioned above are the ones that have the most important roles in the final submission.

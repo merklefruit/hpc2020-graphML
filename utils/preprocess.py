@@ -8,6 +8,7 @@ pd.set_option('mode.chained_assignment', None)
 # preprocessing of heterogeneous nodes and edges
 def preprocess_data(v_sample, e_sample, core_targets, ext_targets, core_testing):
   t0 = time.time()
+  print("PREPROCESSING DATA STARTED")
 
   v_data = v_sample
 
@@ -87,26 +88,26 @@ def preprocess_data(v_sample, e_sample, core_targets, ext_targets, core_testing)
 
   #? 3: Logical conversion of categorical features
 
-  #Revenue Size Flag: low, mid_low, medium, mid_high, high -> 1,2,3,4,5
+  # Revenue Size Flag: low, mid_low, medium, mid_high, high -> 0,1
   conversion = {'low':0.1, 'mid_low':0.3, 'medium':0.6, 'mid_high':0.8, 'high':1}
   for i in v_sets:
     if 'Revenue Size Flag' in list(v_sets[i].columns):
       v_sets[i]['Revenue Size Flag']=v_sets[i]['Revenue Size Flag'].map(conversion)
     
-  #Income Size Flag: low, medium, high -> 1,2,3
+  # Income Size Flag: low, medium, high -> 0,1
   conversion = {'low':0.1, 'medium':0.5, 'high':1}
   for i in v_sets:
     if 'Income Size Flag' in list(v_sets[i].columns):
       v_sets[i]['Income Size Flag']=v_sets[i]['Income Size Flag'].map(conversion)
 
-  #Similarity Strength: weak, medium, strong -> 1,2,3
+  # Similarity Strength: weak, medium, strong -> 0,1
   conversion = {'weak':0.1, 'medium':0.5, 'strong':1}
   for i in e_sets:
     if 'Similarity Strength' in list(e_sets[i].columns):
       e_sets[i]['Similarity Strength']= e_sets[i]['Similarity Strength'].map(conversion)
       e_sets[i] = e_sets[i].rename(columns={'Similarity Strength':'weight'})
 
-  #Amount Flag: small, medium, large -> 1,50,500 -> treated as weights
+  # Amount Flag: small, medium, large -> 0,1 -> treated as weights
   conversion = {'small':0.1, 'medium':0.5, 'large':1}
   for i in e_sets:
     if 'Amount Flag' in list(e_sets[i].columns):
@@ -114,12 +115,17 @@ def preprocess_data(v_sample, e_sample, core_targets, ext_targets, core_testing)
       e_sets[i] = e_sets[i].rename(columns={'Amount Flag':'weight'})
 
 
-  #? 4: One-hot encoding for categorical features
+  #? 4: One-hot encoding
 
-  # get_dummies for one-hot encoding
+  # One-hot encoding of Person or Organisation
   for i in v_sets:
       if 'Person or Organisation' in list(v_sets[i].columns):
           v_sets[i] = pd.get_dummies(v_sets[i], columns=['Person or Organisation'])
+
+  # one-hot encoding of CoreCaseGraphID
+  for i in v_sets:
+      if 'CoreCaseGraphID' in list(v_sets[i].columns):
+          v_sets[i] = pd.get_dummies(v_sets[i], columns=['CoreCaseGraphID'])
 
 
   #? 5: String features
@@ -140,13 +146,15 @@ def preprocess_data(v_sample, e_sample, core_targets, ext_targets, core_testing)
   Note: isReadable flag: 
     it basically tells me if the name has been protected by encryption and is thus unreadable.
     I finally decided not to use this feature.
+    (view "notebooks/isReadable field" for more details)
   '''
-  # # Adding 'Readable' flag:
+
+  # # Adding 'Fraudolent' flag:
   # for set in v_sets:
-  #   v_sets[set]['Readable'] = np.where(
+  #   v_sets[set]['Fraudolent'] = np.where(
   #   np.logical_or(v_sets[set]['CoreCaseGraphID'] != 0.0, v_sets[set]['ExtendedCaseGraphID'] != 0.0), '1', '0')
 
   t1 = time.time()
-  print(f"PREPROCESSING DATA: {(t1-t0):.2f} s")
+  print(f"PREPROCESSING DATA COMPLETED: {(t1-t0):.2f} s")
 
   return v_sets, e_sets
