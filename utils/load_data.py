@@ -18,8 +18,10 @@ training_core_path = Path("/training_core_nodes.csv")
 training_extended_path = Path("/training_extended_nodes.csv")
 testing_core_path = Path("/testing_core_nodes.csv")
 
-# Loads data either from remote or local locations
-# based on if you have already downloaded it before.
+'''
+Loads data either from remote or local locations
+based on if you have already downloaded it before.
+'''
 def load_data():
 
   os.chdir('../')

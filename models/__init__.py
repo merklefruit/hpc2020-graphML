@@ -1,2 +1,3 @@
 from .deepWalk import sg_DeepWalk
-from .deepGInfomax import deepGraphInfomax
+from .DGIEmbeddings import createEmbeddings
+from .DGIFullPipeline import DGIPipeline

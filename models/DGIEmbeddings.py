@@ -17,8 +17,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import Model, optimizers, losses, metrics
 
-def deepGraphInfomax(v_sets, e_sets, core_targets, ext_targets, v_sample, e_sample):
-  print("DeepGraphInfomax Starting")
+def createEmbeddings(v_sets, e_sets, core_targets, ext_targets, v_sample, e_sample):
+  print("DeepGraphInfomax embedding Starting")
 
   t0 = time.time()
 
