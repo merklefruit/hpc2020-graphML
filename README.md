@@ -29,15 +29,14 @@ python run.py
 
 ## Solution overview
 
-The final solution is composed of:
+The final pipeline is composed of:
 
-1. An embedding model: 2 HinSAGE layers that produce node embeddings (32-dimensional tensors), trained with Deep Graph Infomax in a semi-supervised way.
-2. A classifier that takes as input the embeddings, that predicts whether each node could be fraudolent or not (aka Binary classifier predicting 1 if the node should have ExtendedCaseID and 0 if it shouldn't).
-3. A classifier that takes as input the embeddings of the aforementioned fraudolent nodes and outputs their ExtendedCaseID.
+1. Loading data
+2. Preprocessing data
+3. An embedding model: 2 HinSAGE layers that produce node embeddings (32-dimensional tensors), trained with Deep Graph Infomax in a semi-supervised way. This must be repeated for each node type (5 times).
+4. A Decision Tree classifier that takes as input the node embeddings and outputs the predicted Case ID.
 
-The reason for the second classifier is to remove class imbalance with regard to the ExtendedCaseID=0 class.
-
-> Please refer to my written report for all the implementation specific details.
+> Please refer to my [written report](linktoreport) for all the implementation specific details.
 
 ## External Libraries
 
@@ -50,4 +49,4 @@ The main libraries leveraged in this solutions are:
 
 You can find the complete list of the dependencies as well as their version in `requirements.txt`.
 
-Please note that some libraries were only used in the development phase and are not relevant to the final solution. The ones mentioned above are the ones that have the most important roles in the final submission.
+Please note that some libraries were only used in the development phase and are not relevant to the final solution but might be only used in some notebooks. The ones mentioned above are the ones that I used the most.
