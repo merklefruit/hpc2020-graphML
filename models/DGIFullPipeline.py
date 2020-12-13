@@ -192,12 +192,12 @@ def DGIPipeline(v_sets, e_sets, v_data, e_data, core_targets, ext_targets, core_
   full_predictions = pd.DataFrame()
   for v_type in v_sets:
       if v_type == 'Account':
-          epochs = 10
+          epochs = 12
           num_samples = [8, 4]
           hinsage_layer_sizes = [32, 32]
           activations = ['relu', 'relu']
       else:
-          epochs = 10
+          epochs = 30
           num_samples = [12]
           hinsage_layer_sizes = [72]
           activations = ['relu']
