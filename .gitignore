@@ -7,3 +7,4 @@ demo.py
 .DS_Store
 raw
 processed
+venv
