@@ -1,4 +1,5 @@
 import time
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -52,15 +53,11 @@ def DGIPipeline(v_sets, e_sets, v_data, e_data, core_targets, ext_targets, core_
   '''
   # Parameters
   batch_size = 200
-  epochs = 10
-  num_samples = [8, 4]
   dropout = 0.4
-  hinsage_layer_sizes = [32, 32]
   verbose = 1
   visualize = False
 
-  def run_for_node_type(v_type):
-      print(f"Starting pipeline for ")
+  def run_for_node_type(v_type, hinsage_layer_sizes, num_samples, activations, epochs):
       nan_tflag = data_splits[v_type].iloc[0].values[0]
       train_tflag = data_splits[v_type].iloc[1].values[0]
       test_tflag = data_splits[v_type].iloc[2].values[0]
@@ -81,7 +78,7 @@ def DGIPipeline(v_sets, e_sets, v_data, e_data, core_targets, ext_targets, core_
 
       hinsage = HinSAGE(
           layer_sizes=hinsage_layer_sizes,
-          activations=['relu', 'relu'],
+          activations=activations,
           generator=generator, 
           bias=True,
           normalize="l2",
@@ -175,19 +172,41 @@ def DGIPipeline(v_sets, e_sets, v_data, e_data, core_targets, ext_targets, core_
       )
       test_pred = classifier.predict(test_embs)
       
+      #? Save predictions
+      outdir = './output'
+      outname = f"{v_type}_predictions.csv"
+      if not os.path.exists(outdir):
+          os.mkdir(outdir)
+      fullname = os.path.join(outdir, outname)
+
       output = pd.DataFrame(test_ids)
       output = output.rename(columns={0: 'node_id'})
       output['ExtendedCaseGraphID'] = test_pred
       output = output.set_index('node_id')
-      output.to_csv(f"./output/{v_type}_predictions.csv")
+
+      output.to_csv(fullname)
 
       return output
   
   #? Run for each node type
   full_predictions = pd.DataFrame()
   for v_type in v_sets:
-      predictions = run_for_node_type(v_type)
-      full_predictions.append(predictions)
+      if v_type == 'Account':
+          epochs = 10
+          num_samples = [8, 4]
+          hinsage_layer_sizes = [32, 32]
+          activations = ['relu', 'relu']
+      else:
+          epochs = 10
+          num_samples = [12]
+          hinsage_layer_sizes = [72]
+          activations = ['relu']
+
+      if v_type != 'External Entity' and v_type != 'Address':
+          predictions = run_for_node_type(v_type, hinsage_layer_sizes, num_samples, activations, epochs)
+          full_predictions = full_predictions.append(predictions)
+
+  full_predictions.to_csv("./output/full_predictions.csv")
 
   tout = time.time()
   print(f"HINSAGE DGI FULL PIPELINE COMPLETED: {(tin-tout)/60:.0f} min")

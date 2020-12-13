@@ -22,9 +22,10 @@ testing_core_path = Path("/testing_core_nodes.csv")
 Loads data either from remote or local locations
 based on if you have already downloaded it before.
 '''
-def load_data():
+def load_data(from_jup=False):
   print("LOADING DATA STARTED")
-  os.chdir('../')
+  if from_jup:
+      os.chdir('../')
 
   def load_local_data():
     print("Dataset already downloaded. Loading it from file system")
@@ -75,5 +76,8 @@ def load_data():
       except OSError:
         print("Error creating data directory")
     nodes, edges, core_target, ext_target, core_testing = load_remote_data()
+
+  if from_jup:
+      os.chdir('./notebooks')
 
   return nodes, edges, core_target, ext_target, core_testing

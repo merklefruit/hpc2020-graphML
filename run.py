@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils.load_data import load_data
-from utils.preprocess import preprocess_data
-from utils.tools import subsample
-
+from utils import load_data, smart_preprocess, subsample
 from models import sg_DeepWalk, createEmbeddings, DGIPipeline
 
 '''
@@ -16,13 +13,14 @@ Main script -
   of the contest, and it runs the final submission script (full pipeline).
   To see other methods instead, uncomment the necessary lines.
 
-  After the first run, the dataset is pulled from the local folder (data/raw/..).
+  After the first run, the dataset is pulled from the local folder (data/raw/..) and the processed 
+  data is pulled from the local folder (data/processed/..) in order to save time.
 '''
 def main():
   print("Running the scripts sequentially \n")
 
   #? Load data - either remotely or locally if already downloaded
-  v_data, e_data, core_targets, ext_targets, core_testing = load_data()
+  v_data, e_data, core_targets, ext_targets, core_testing = load_data(from_jup=False)
 
   #? Subsample helper function (n edges)
   #Note: this is commented since I'm training the embedding model on the whole graph.
@@ -30,7 +28,7 @@ def main():
   #v_data, e_data, core_targets, ext_targets = subsample(v_data, e_data, core_targets, ext_targets, n)
 
   #? Preprocess helper function
-  v_sets, e_sets = preprocess_data(v_data, e_data, core_targets, ext_targets, core_testing)
+  v_sets, e_sets = smart_preprocess(v_data, e_data, core_targets, ext_targets, core_testing)
 
   '''
   Old methods:
