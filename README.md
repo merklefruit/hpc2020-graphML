@@ -36,7 +36,7 @@ The final pipeline is composed of:
 3. An embedding model: 2 HinSAGE layers that produce node embeddings (32-dimensional tensors), trained with Deep Graph Infomax in a semi-supervised way. This must be repeated for each node type (5 times).
 4. A Decision Tree classifier that takes as input the node embeddings and outputs the predicted Case ID.
 
-> Please refer to my [written report](linktoreport) for all the implementation specific details.
+> Please refer to my written report for all the implementation specific details.
 
 ## External Libraries
 
