@@ -8,3 +8,5 @@ demo.py
 raw
 processed
 venv
+
+__pycache__
