@@ -36,16 +36,20 @@ The final pipeline is composed of:
 3. An embedding model: 2 HinSAGE layers that produce node embeddings (32-dimensional tensors), trained with Deep Graph Infomax in a semi-supervised way. This must be repeated for each node type (5 times).
 4. A Decision Tree classifier that takes as input the node embeddings and outputs the predicted Case ID.
 
-> Please refer to my written report for all the implementation specific details.
+> Please refer to my [written report](./HPC_GraphML_2020_Contest_Nicolas_Racchi.pdf) for all the implementation specific details.
+
+## Predictions CSV
+
+You can also find the ready-made predictions in `output/full_predictions.csv`. Please note that, as stated in my report, **I predicted the extended case only for the nodes of type Account, Customer, and Derived Entity,** which together make more than 80% of all cases.
 
 ## External Libraries
 
 The main libraries leveraged in this solutions are:
 
-- Stellargraph (with Tensorflow backend)
-- Pandas
-- Numpy
-- Sklearn
+- Stellargraph 1.2.1
+- Tensorflow 2.3.1
+- Pandas 1.1.5
+- Numpy 1.18.5
 
 You can find the complete list of the dependencies as well as their version in `requirements.txt`.
 
